@@ -4,14 +4,18 @@ mod middle;
 mod service;
 mod controller;
 mod config;
+mod api;
 
 #[macro_use]
 extern crate serde_derive;
 extern crate erased_serde;
 extern crate serde;
-extern crate serde_json;
 extern crate time;
 extern crate futures;
+#[macro_use]
+extern crate serde_json;
+#[macro_use]
+extern crate log;
 
 use actix_web::{App, get, HttpResponse, HttpServer, Responder, web, middleware};
 
@@ -24,7 +28,7 @@ async fn get_request() -> impl Responder {
 // 把请求体提取成String
 async fn post_request(body: String) -> impl Responder {
     println!("{}", body);
-    HttpResponse::Ok().body("post_ok")
+    HttpResponse::Ok().json("post_ok")
 }
 
 /// 测试链接：
@@ -39,6 +43,10 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/private")
                 .wrap(middle::jwt::Authentication)
                     .route("", web::get().to(post_request)),
+            )
+            .service(
+                web::scope("/api/login")
+                .route("", web::post().to(api::user::login)),
             )
             // 在这里传入定义的服务
             .service(get_request)

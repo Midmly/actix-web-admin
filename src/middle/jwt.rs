@@ -5,7 +5,7 @@ use actix_web::{
     Error,
     error,
 };
-use futures_util::future::{LocalBoxFuture};
+use futures_util::future::LocalBoxFuture;
 use crate::utils::{constants, token};
 use chrono::Local;
 

@@ -9,12 +9,12 @@ pub fn decode_token(token: String) -> jsonwebtoken::errors::Result<TokenData<Use
     jsonwebtoken::decode::<UserToken>(&token, &DecodingKey::from_secret(cfg::KEY.as_ref()), &Validation::default())
 }
 
-pub fn generate_token(login: LoginRequest) -> String {
+pub fn generate_token(username: String) -> String {
     let now = Local::now().timestamp();
     let payload = UserToken {
         iat: now,
         exp: now + cfg::ONE_WEEK,
-        user: login.username,
+        user: username,
         session: Uuid::new_v4().to_string(),
     };
 
